@@ -65,8 +65,32 @@ existing browser tools, without abandoning it as offline fallback.
   embedded u2netp, unchanged pipeline. Never block on the network.
 - UI badge indicates active engine: 標準模式 / 增強模式.
 
-## Open decisions (phase 1 scope)
-1. Desktop app timeline: is the sidecar realistic as the first build, or
-   should a Modal endpoint come first?
-2. Do client-facing tools need server-grade cutouts at all, or is
-   u2netp-quality sufficient for pre-consultation briefs?
+## Decisions resolved
+1. Serving order: MODAL-FIRST, sidecar later. Rationale: zero-install for
+   Uta (browser tools just gain 增強模式 when the endpoint is reachable),
+   all updates ship server-side with no version drift, and her Mac stays
+   untouched — no background inference process or model weights until the
+   desktop app can bundle them properly with an auto-updater.
+   - Accepted tradeoff: ~15 s cold start after idle. Mitigation: fire a
+     warm-up probe on tool open + 「AI 引擎啟動中…」 status message.
+   - Accepted tradeoff: photos transit Modal during this phase. Do NOT
+     market 「照片不離開電腦」 until the sidecar era. Sidecar remains the
+     end-state for the privacy story.
+2. Still open (defer, non-blocking): whether client-facing tools get
+   server-grade cutouts or stay u2netp-only. Modal-first makes adding
+   this later a base-URL change.
+
+## Phase 1 scope — Modal deployment of the /v1 contract
+- Modal app exposing: POST /v1/jobs (async: segment via BiRefNet,
+  upscale via Real-ESRGAN x4plus, pipeline ops by capability name),
+  GET /v1/jobs/{id}, POST /v1/embed (sync SAM image embedding),
+  GET /v1/health (used by the capability probe / warm-up).
+- Model weights cached on a Modal Volume (never downloaded on cold start).
+- Output contract: PNG with soft alpha, byte-format-compatible with
+  u2netp output. pipeline_version in every response.
+- Auth: API key header + CORS allowlist.
+- Browser-side SAM decoder (ONNX) is a SEPARATE later step — phase 1
+  only serves the embedding.
+- Unit tests (Node.js where applicable, pytest for the Python service)
+  for contract shapes and the scale-computation logic
+  (crop size ÷ target print size, skip when ≤1x).
