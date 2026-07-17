@@ -35,7 +35,7 @@ WEIGHTS_DIR = "/weights"
 # torchvision.transforms.functional_tensor, removed in 0.17.
 gpu_image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("libgl1", "libglib2.0-0")
+    .apt_install("libgl1", "libglib2.0-0", "git")  # git: MobileSAM pip VCS install
     .pip_install(
         "torch==2.1.2",
         "torchvision==0.16.2",
