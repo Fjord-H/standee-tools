@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init *)",
+      "Bash(git -C \"/c/School/Toy_box/Party Warm/Upscaler\" add CLAUDE.md)",
+      "Bash(git -C \"/c/School/Toy_box/Party Warm/Upscaler\" status)"
+    ]
+  }
+}
