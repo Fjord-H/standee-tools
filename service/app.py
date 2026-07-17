@@ -31,11 +31,13 @@ app = modal.App("standee-pipeline")
 volume = modal.Volume.from_name("standee-weights", create_if_missing=True)
 WEIGHTS_DIR = "/weights"
 
-# torchvision is pinned <0.17 because basicsr 1.4.2 imports
-# torchvision.transforms.functional_tensor, removed in 0.17.
+# Real-ESRGAN runs on our own plain-torch RRDBNet (service/ops/rrdbnet.py);
+# the unmaintained basicsr/realesrgan/opencv stack is deliberately absent.
+# torch/torchvision are a known-good pair for BiRefNet remote code and
+# MobileSAM (both use torchvision transforms).
 gpu_image = (
     modal.Image.debian_slim(python_version="3.11")
-    .apt_install("libgl1", "libglib2.0-0", "git")  # git: MobileSAM pip VCS install
+    .apt_install("git")  # MobileSAM pip VCS install
     .pip_install(
         "torch==2.1.2",
         "torchvision==0.16.2",
@@ -43,9 +45,6 @@ gpu_image = (
         "timm==1.0.13",
         "kornia==0.7.4",
         "einops==0.8.0",
-        "basicsr==1.4.2",
-        "realesrgan==0.3.0",
-        "opencv-python-headless==4.10.0.84",
         "numpy<2",
         "pillow==10.4.0",
         "pydantic==2.10.4",
