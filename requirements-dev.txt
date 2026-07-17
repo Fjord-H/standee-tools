@@ -1,0 +1,4 @@
+# Local development / tests only. The service's runtime dependencies are
+# pinned inside the Modal images in service/app.py and service/weights.py.
+pydantic>=2.10
+pytest>=8

@@ -3,7 +3,11 @@
     "allow": [
       "Bash(git init *)",
       "Bash(git -C \"/c/School/Toy_box/Party Warm/Upscaler\" add CLAUDE.md)",
-      "Bash(git -C \"/c/School/Toy_box/Party Warm/Upscaler\" status)"
+      "Bash(git -C \"/c/School/Toy_box/Party Warm/Upscaler\" status)",
+      "Bash(python -c \"import pydantic, pytest; print\\('pydantic', pydantic.VERSION, '| pytest', pytest.__version__\\)\")",
+      "Bash(python -m pip install --quiet pydantic pytest)",
+      "Bash(python -m pytest tests/ -v)",
+      "Bash(python -c \"import service.pipeline, service.schemas, service.scale, service.version; print\\('imports OK, no torch/modal needed'\\)\")"
     ]
   }
 }
