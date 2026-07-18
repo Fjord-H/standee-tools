@@ -9,7 +9,11 @@
       "Bash(python -m pytest tests/ -v)",
       "Bash(python -c \"import service.pipeline, service.schemas, service.scale, service.version; print\\('imports OK, no torch/modal needed'\\)\")",
       "Bash(python -m pytest tests/ -q)",
-      "Bash(python -c \"import service.pipeline, service.schemas, service.scale; print\\('core imports OK without torch'\\)\")"
+      "Bash(python -c \"import service.pipeline, service.schemas, service.scale; print\\('core imports OK without torch'\\)\")",
+      "Bash(awk '{ if \\(length\\($0\\) > 5000\\) printf \"line %d: %d chars \\(BLOB\\)\\\\n\", NR, length\\($0\\) }' client/cutout-outline-studio-v0_2.html)",
+      "Bash(awk '{ if \\(length\\($0\\) > 5000\\) printf \"line %d: %d chars \\(BLOB\\)\\\\n\", NR, length\\($0\\) }' \"client/cutout-outline-studio-v0.2.html\")",
+      "Bash(grep -n -o -E \"\\(async \\)?function [A-Za-z_$]+|const [A-Za-z_$]+ = \\(async \\)?\\\\\\(|class [A-Za-z_$]+\" \"client/cutout-outline-studio-v0.2.html\")",
+      "Bash(awk 'length\\($0\\)<300')"
     ]
   }
 }

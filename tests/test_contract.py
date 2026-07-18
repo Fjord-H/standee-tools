@@ -69,6 +69,11 @@ class TestResponses:
         resp = HealthResponse(warm=False)
         assert resp.pipeline_version == PIPELINE_VERSION
         assert resp.status == "ok"
+        assert resp.warm_job_id is None  # only set on ?warm=1
+
+    def test_health_response_warm_job_id_roundtrips(self):
+        resp = HealthResponse(warm=True, warm_job_id="fc-abc")
+        assert resp.warm_job_id == "fc-abc"
 
     def test_succeeded_response_roundtrips_result(self):
         payload = {

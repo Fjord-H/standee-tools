@@ -171,17 +171,22 @@ def api():
             return JobResponse(job_id=job_id, status="failed", error=str(exc))
         except Exception as exc:  # user-code exception re-raised by Modal
             return JobResponse(job_id=job_id, status="failed", error=str(exc))
-        return JobResponse(job_id=job_id, status="succeeded",
-                           result=JobResult.model_validate(result))
+        # warm() jobs resolve to a bare True — only real jobs carry a result
+        return JobResponse(
+            job_id=job_id, status="succeeded",
+            result=JobResult.model_validate(result)
+            if isinstance(result, dict) else None)
 
     @web_app.post("/v1/embed", response_model=EmbedResponse)
     def embed(req: EmbedRequest):
         return EmbedResponse(**engine.embed.remote(req.image_b64))
 
-    @web_app.get("/v1/health", response_model=HealthResponse)
+    @web_app.get("/v1/health", response_model=HealthResponse,
+                 response_model_exclude_none=True)
     def health(warm: int = 0):
+        warm_job_id = None
         if warm:
-            engine.warm.spawn()
-        return HealthResponse(warm=bool(warm))
+            warm_job_id = engine.warm.spawn().object_id
+        return HealthResponse(warm=bool(warm), warm_job_id=warm_job_id)
 
     return web_app

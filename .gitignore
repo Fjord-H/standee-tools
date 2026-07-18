@@ -10,3 +10,4 @@ venv/
 # smoke-test artifacts written to the repo root (see docs/smoke-test.md)
 /*.png
 /*.jpg
+/*.zip

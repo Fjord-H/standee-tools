@@ -95,4 +95,6 @@ class EmbedResponse(BaseModel):
 class HealthResponse(BaseModel):
     status: Literal["ok"] = "ok"
     warm: bool                            # a GPU engine warm-up was triggered
+    warm_job_id: Optional[str] = None     # poll /v1/jobs/{id} to know when
+                                          # the engine is actually warm
     pipeline_version: str = PIPELINE_VERSION
