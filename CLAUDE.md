@@ -31,6 +31,19 @@ existing browser tools, without abandoning it as offline fallback.
 - HARD RULE: no face-hallucinating restoration (GFPGAN, CodeFormer, SUPIR)
   by default. Children's faces must not be invented. Any face restoration
   is opt-in with human review.
+  - Investigated 2026-07 as an opt-in feature (fidelity-weighted
+    CodeFormer, auto-review via the detail view) and POSTPONED on
+    licensing grounds, not just the ethical ones: CodeFormer is S-Lab
+    License 1.0, non-commercial only. GFPGAN's top-level Apache-2.0
+    label is misleading — its generative facial prior depends on
+    StyleGAN2 (NVIDIA non-commercial license) and a DFDNet-derived
+    component (CC BY-NC-SA 4.0), so the actual pretrained weights are
+    not clear for a paid service. Neither is usable without explicit
+    commercial permission from the rights holders. Revisit only if
+    blur becomes a recurring, order-blocking problem — the mitigation
+    in the meantime is the client's 檢視細節 100% view (catch it before
+    committing), the local 銳化 sharpening filter (helps mild softness
+    only), and asking parents for a sharper original.
 
 ## Serving architecture
 - Primary: desktop-local sidecar. The future desktop app runs inference
