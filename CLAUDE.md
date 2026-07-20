@@ -30,20 +30,50 @@ existing browser tools, without abandoning it as offline fallback.
   90 cm @ 100 dpi = ~3540 px). Skip upscaling when unnecessary.
 - HARD RULE: no face-hallucinating restoration (GFPGAN, CodeFormer, SUPIR)
   by default. Children's faces must not be invented. Any face restoration
-  is opt-in with human review.
-  - Investigated 2026-07 as an opt-in feature (fidelity-weighted
-    CodeFormer, auto-review via the detail view) and POSTPONED on
-    licensing grounds, not just the ethical ones: CodeFormer is S-Lab
-    License 1.0, non-commercial only. GFPGAN's top-level Apache-2.0
-    label is misleading — its generative facial prior depends on
-    StyleGAN2 (NVIDIA non-commercial license) and a DFDNet-derived
-    component (CC BY-NC-SA 4.0), so the actual pretrained weights are
-    not clear for a paid service. Neither is usable without explicit
-    commercial permission from the rights holders. Revisit only if
-    blur becomes a recurring, order-blocking problem — the mitigation
-    in the meantime is the client's 檢視細節 100% view (catch it before
-    committing), the local 銳化 sharpening filter (helps mild softness
-    only), and asking parents for a sharper original.
+  is opt-in with human review. See "Generative face restoration — status"
+  below for the licensing investigation and current status.
+
+## Generative face restoration — status (do not build yet)
+Trigger: some parent photos are too blurry/low-res for BiRefNet + Real-ESRGAN
+x4plus to save (identified by Uta in production use).
+
+Investigated: CodeFormer and GFPGAN, the standard options. Both are
+non-commercial-only licenses (CodeFormer: NTU S-Lab License 1.0;
+GFPGAN carries NVIDIA/DFDNet non-commercial restrictions). This business
+sells prints for revenue, so using either as-is on paid orders is
+commercial use under these licenses, regardless of whether AI use is
+disclosed to clients. Training an in-house model is out of scope: multi-
+month research effort, needs separately-licensed face training data, and
+does not remove the actual concern — a self-trained model would still
+invent facial detail on a blurry photo.
+
+Action taken: emailed CodeFormer's author (contact listed on the
+official repo) to ask about a commercial license for our volume.
+Awaiting reply as of 2026-07-19.
+
+If a commercial license or license-clean alternative is ever obtained,
+the HARD RULE above is unchanged: any face-restoration op is opt-in per
+photo and requires human review before use. Never automatic, never
+default-on. Licensing and hallucination risk are separate problems, and
+only the first is resolved by a license.
+
+Caution on paid third-party "CodeFormer API" services: the authors'
+own repo lists most public CodeFormer-branded API hosts as unauthorized,
+non-official deployments. Paying one does not confer a legitimate
+commercial license. A genuine paid option would need to be an
+independently, commercially-licensed model, not a wrapped CodeFormer
+endpoint.
+
+Also investigated: RestoreFormer++ (Tencent ARC lineage, transformer-based).
+Code is genuinely Apache 2.0 (verified against the actual LICENSE file).
+Weights are trained on FFHQ, which is CC BY-NC-SA 4.0 (non-commercial) and
+additionally restricted from use in facial recognition development. README
+does not restate any separate commercial grant for the released weights.
+Same conclusion as CodeFormer/GFPGAN: structural, not a licensing label to
+shop around — the free academic face-restoration ecosystem converges on
+FFHQ/CelebA-HQ, both non-commercial. Emailed the author (contact listed on
+the official repo) in parallel with the CodeFormer email. Awaiting reply
+as of 2026-07-19.
 
 ## Serving architecture
 - Primary: desktop-local sidecar. The future desktop app runs inference
